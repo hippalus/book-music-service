@@ -61,15 +61,15 @@ class BooksServiceGoogleImpl(
                 is HttpResponseException -> {
                     throw convertGoogleApiError(ex)
                 }
-
+                
                 else -> {
                     throw ex
                 }
             }
         }
-
+        
     }
-
+    
     private fun convertGoogleApiError(ex: HttpResponseException): Throwable {
         if (ex.is4xxClientError) {
             return ServiceCallException(ex.content, HttpStatusCode.valueOf(ex.statusCode))
@@ -79,10 +79,11 @@ class BooksServiceGoogleImpl(
         }
         return ex
     }
-
-    private val HttpResponseException.is4xxClientError: Boolean
-        get() = statusCode >= HttpStatusCodes.STATUS_CODE_BAD_REQUEST && statusCode < HttpStatusCodes.STATUS_CODE_SERVER_ERROR
-
-    private val HttpResponseException.is5xxServerError: Boolean
-        get() = statusCode >= HttpStatusCodes.STATUS_CODE_SERVER_ERROR
+    
 }
+
+val HttpResponseException.is4xxClientError: Boolean
+    get() = statusCode >= HttpStatusCodes.STATUS_CODE_BAD_REQUEST && statusCode < HttpStatusCodes.STATUS_CODE_SERVER_ERROR
+
+val HttpResponseException.is5xxServerError: Boolean
+    get() = statusCode >= HttpStatusCodes.STATUS_CODE_SERVER_ERROR
