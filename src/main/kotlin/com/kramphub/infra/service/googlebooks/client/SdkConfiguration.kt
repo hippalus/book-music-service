@@ -1,4 +1,4 @@
-package com.kramphub.infra.config
+package com.kramphub.infra.service.googlebooks.client
 
 import com.google.api.client.googleapis.javanet.GoogleNetHttpTransport
 import com.google.api.client.http.HttpRequest

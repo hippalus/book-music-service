@@ -1,6 +1,6 @@
 package com.kramphub.infra.config
 
-import com.kramphub.infra.service.client.ITunesClient
+import com.kramphub.infra.service.itunes.client.ITunesClient
 import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Configuration
 import org.springframework.web.reactive.function.client.support.WebClientAdapter

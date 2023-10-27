@@ -9,6 +9,10 @@ import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.context.properties.ConfigurationProperties
 import org.springframework.context.annotation.Configuration
 import org.springframework.http.client.reactive.ReactorClientHttpConnector
+import org.springframework.http.codec.ClientCodecConfigurer
+import org.springframework.http.codec.json.Jackson2JsonDecoder
+import org.springframework.http.codec.json.Jackson2JsonEncoder
+import org.springframework.util.MimeType
 import org.springframework.web.reactive.function.client.ClientResponse
 import org.springframework.web.reactive.function.client.ExchangeFilterFunction
 import org.springframework.web.reactive.function.client.WebClient
@@ -31,9 +35,25 @@ data class ServiceConfigurations(
 
             return builder.baseUrl(serviceConfig.url)
                 .filter(errorFilter())
+                .codecs { codecConfigurer(it) }
                 .clientConnector(reactorClientHttpConnector(serviceConfig))
                 .build()
         }
+    }
+
+    private fun codecConfigurer(clientCodecConfigurer: ClientCodecConfigurer) {
+        clientCodecConfigurer.defaultCodecs().jackson2JsonEncoder(
+            Jackson2JsonEncoder(
+                JacksonUtils.enhancedObjectMapper(),
+                MimeType.valueOf("text/javascript;charset=utf-8")
+            )
+        )
+        clientCodecConfigurer.defaultCodecs().jackson2JsonDecoder(
+            Jackson2JsonDecoder(
+                JacksonUtils.enhancedObjectMapper(),
+                MimeType.valueOf("text/javascript;charset=utf-8")
+            )
+        )
     }
 
     private fun reactorClientHttpConnector(serviceConfiguration: ServiceConfiguration): ReactorClientHttpConnector {

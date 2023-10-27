@@ -1,4 +1,4 @@
-package com.kramphub.infra.service.client
+package com.kramphub.infra.service.itunes.client
 
 import java.math.BigDecimal
 import java.time.ZonedDateTime
@@ -335,41 +335,41 @@ enum class Attribute(val value: String) {
 
 data class ITunesSearchResponse(
     val resultCount: Int? = 0,
-    val results: List<Result> = listOf()
+    val results: List<ITunesResult> = listOf()
 )
 
-data class Result(
-    val wrapperType: String?,
-    val kind: String?,
-    val artistId: Int?,
+data class ITunesResult(
+    val wrapperType: String? = null,
+    val kind: String? = null,
+    val artistId: Int? = null,
     val collectionId: Int,
-    val trackId: Int?,
-    val artistName: String?,
+    val trackId: Int? = null,
+    val artistName: String? = null,
     val collectionName: String,
-    val trackName: String?,
-    val collectionCensoredName: String?,
-    val trackCensoredName: String?,
-    val artistViewUrl: String?,
-    val collectionViewUrl: String?,
-    val trackViewUrl: String?,
-    val previewUrl: String?,
-    val artworkUrl30: String?,
-    val artworkUrl60: String?,
-    val artworkUrl100: String?,
-    val collectionPrice: BigDecimal?,
-    val trackPrice: BigDecimal?,
-    val releaseDate: ZonedDateTime?,
-    val collectionExplicitness: String?,
-    val trackExplicitness: String?,
-    val discCount: Int?,
-    val discNumber: Int?,
-    val trackCount: Int?,
-    val trackNumber: Int?,
-    val trackTimeMillis: Int?,
-    val country: String?,
-    val currency: String?,
-    val primaryGenreName: String?,
-    val isStreamable: Boolean?
+    val trackName: String? = null,
+    val collectionCensoredName: String? = null,
+    val trackCensoredName: String? = null,
+    val artistViewUrl: String? = null,
+    val collectionViewUrl: String? = null,
+    val trackViewUrl: String? = null,
+    val previewUrl: String? = null,
+    val artworkUrl30: String? = null,
+    val artworkUrl60: String? = null,
+    val artworkUrl100: String? = null,
+    val collectionPrice: BigDecimal? = null,
+    val trackPrice: BigDecimal? = null,
+    val releaseDate: ZonedDateTime? = null,
+    val collectionExplicitness: String? = null,
+    val trackExplicitness: String? = null,
+    val discCount: Int? = null,
+    val discNumber: Int? = null,
+    val trackCount: Int? = null,
+    val trackNumber: Int? = null,
+    val trackTimeMillis: Int? = null,
+    val country: String? = null,
+    val currency: String? = null,
+    val primaryGenreName: String? = null,
+    val isStreamable: Boolean? = null,
 )
 
 enum class YesNoType {

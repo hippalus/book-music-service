@@ -1,4 +1,4 @@
-package com.kramphub.infra.service.client
+package com.kramphub.infra.service.itunes.client
 
 import io.github.resilience4j.bulkhead.annotation.Bulkhead
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker
@@ -27,7 +27,7 @@ interface ITunesClient {
         @RequestParam("lang") lang: String,
         @RequestParam("version") version: Int? = 2,
         @RequestParam("explicit") explicit: YesNoType? = YesNoType.Y
-    ): Mono<ResponseEntity<String>>
+    ): Mono<ResponseEntity<ITunesSearchResponse>>
 
 
 }

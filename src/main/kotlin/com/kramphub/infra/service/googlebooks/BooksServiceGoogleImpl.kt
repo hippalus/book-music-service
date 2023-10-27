@@ -1,7 +1,6 @@
-package com.kramphub.infra.service
+package com.kramphub.infra.service.googlebooks
 
 import com.google.api.services.books.v1.Books
-import com.google.api.services.books.v1.model.Volumes
 import com.kramphub.domain.model.Book
 import com.kramphub.domain.model.SearchCriteria
 import com.kramphub.domain.service.BooksService
@@ -11,7 +10,6 @@ import io.github.resilience4j.retry.annotation.Retry
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.scheduler.Schedulers
-
 
 @Service
 class BooksServiceGoogleImpl(
@@ -27,12 +25,13 @@ class BooksServiceGoogleImpl(
     }
 
     private fun googleBooks(criteria: SearchCriteria): List<Book> {
-        val volumesList = googleBooks.volumes().list(criteria.query)
+        val volumes: Books.Volumes = googleBooks.volumes()
+        val volumesList = volumes.list(criteria.query)
             .setMaxResults(5)
 
-        val volumes: Volumes = volumesList.execute()
+        val execute = volumesList.execute()
 
-        return (volumes.items
+        return (execute.items
             ?.map { it.volumeInfo }
             ?.map { Book(it.title, it.authors) }
             ?: listOf())
