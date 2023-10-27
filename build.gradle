@@ -42,6 +42,7 @@ dependencies {
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-reactor'
     implementation 'org.springframework.cloud:spring-cloud-starter'
+    implementation 'org.springframework.boot:spring-boot-starter-aop'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
     runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
@@ -49,7 +50,6 @@ dependencies {
     testImplementation 'io.projectreactor:reactor-test'
     testImplementation "org.mockito.kotlin:mockito-kotlin:5.0.0"
     testImplementation 'org.springframework.cloud:spring-cloud-contract-wiremock:4.0.3'
-
 }
 
 dependencyManagement {

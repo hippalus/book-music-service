@@ -1,6 +1,7 @@
 package com.kramphub
 
 import org.springframework.boot.autoconfigure.SpringBootApplication
+import org.springframework.boot.context.metrics.buffering.BufferingApplicationStartup
 import org.springframework.boot.context.properties.ConfigurationPropertiesScan
 import org.springframework.boot.runApplication
 
@@ -9,5 +10,5 @@ import org.springframework.boot.runApplication
 class BookAlbumServiceApplication
 
 fun main(args: Array<String>) {
-    runApplication<BookAlbumServiceApplication>(*args)
+    runApplication<BookAlbumServiceApplication>(*args).applicationStartup = BufferingApplicationStartup(10_000)
 }

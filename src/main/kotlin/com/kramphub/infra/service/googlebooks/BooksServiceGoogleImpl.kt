@@ -8,6 +8,7 @@ import com.kramphub.infra.service.googlebooks.client.GoogleApiProperties
 import io.github.resilience4j.bulkhead.annotation.Bulkhead
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker
 import io.github.resilience4j.retry.annotation.Retry
+import io.micrometer.observation.annotation.Observed
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
 import reactor.core.scheduler.Schedulers
@@ -21,6 +22,7 @@ class BooksServiceGoogleImpl(
     @Retry(name = "google-books")
     @Bulkhead(name = "google-books")
     @CircuitBreaker(name = "google-books")
+    @Observed(name = "search-google-books", contextualName = "searching-google-books")
     override fun search(criteria: SearchCriteria): Flux<Book> {
         return Flux.fromIterable(googleBooks(criteria))
             .subscribeOn(Schedulers.boundedElastic())
