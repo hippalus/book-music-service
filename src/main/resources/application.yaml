@@ -1,0 +1,68 @@
+spring:
+  main:
+    web-application-type: reactive
+  webflux:
+    problemdetails:
+      enabled: true
+
+
+book-album-api:
+  services:
+    itunes:
+      url: https://itunes.apple.com
+
+resilience4j.circuitbreaker:
+  instances:
+    google-books:
+      permitted-number-of-calls-in-half-open-state: 10
+      sliding-window-size: 100
+      wait-duration-in-open-state: 30s
+      register-health-indicator: true
+      sliding-window-type: COUNT_BASED
+      failure-rate-threshold: 50
+    itunes:
+      permitted-number-of-calls-in-half-open-state: 10
+      sliding-window-size: 100
+      wait-duration-in-open-state: 30s
+      register-health-indicator: true
+      sliding-window-type: COUNT_BASED
+      failure-rate-threshold: 50
+
+  metrics:
+    enabled: true
+
+resilience4j.retry:
+  instances:
+    google-books:
+      exponential-backoff-multiplier: 3
+      max-attempts: 3
+      enable-exponential-backoff: true
+      wait-duration: 500ms
+      ignore-exceptions:
+        - io.github.resilience4j.circuitbreaker.CallNotPermittedException
+        - com.kramphub.infra.exception.ServiceCallException
+    itunes:
+      exponential-backoff-multiplier: 3
+      max-attempts: 3
+      enable-exponential-backoff: true
+      wait-duration: 500ms
+      ignore-exceptions:
+        - io.github.resilience4j.circuitbreaker.CallNotPermittedException
+        - com.kramphub.infra.exception.ServiceCallException
+  metrics:
+    enabled: true
+
+resilience4j.bulkhead:
+  instances:
+    google-books:
+      max-concurrent-calls: 100
+    itunes:
+      max-concurrent-calls: 100
+  metrics:
+    enabled: true
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include: '*'

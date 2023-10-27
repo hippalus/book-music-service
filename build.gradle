@@ -3,7 +3,6 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 plugins {
     id 'org.springframework.boot' version '3.1.1'
     id 'io.spring.dependency-management' version '1.1.0'
-    id 'org.graalvm.buildtools.native' version '0.9.23'
     id 'org.jetbrains.kotlin.jvm' version '1.8.22'
     id 'org.jetbrains.kotlin.plugin.spring' version '1.8.22'
 }
@@ -23,6 +22,7 @@ configurations {
 
 repositories {
     mavenCentral()
+    google()
 }
 
 ext {
@@ -30,20 +30,24 @@ ext {
 }
 
 dependencies {
+    implementation 'com.google.apis:google-api-services-books:v1-rev20230203-2.0.0'
     implementation 'org.springframework.boot:spring-boot-starter-actuator'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
+    implementation 'io.github.resilience4j:resilience4j-spring-boot2:2.0.2'
+    implementation 'io.github.resilience4j:resilience4j-micrometer:2.0.2'
+    implementation 'org.springdoc:springdoc-openapi-starter-webflux-ui:2.1.0'
     implementation 'com.fasterxml.jackson.module:jackson-module-kotlin'
     implementation 'io.projectreactor.kotlin:reactor-kotlin-extensions'
     implementation 'org.jetbrains.kotlin:kotlin-reflect'
     implementation 'org.jetbrains.kotlinx:kotlinx-coroutines-reactor'
     implementation 'org.springframework.cloud:spring-cloud-starter'
     developmentOnly 'org.springframework.boot:spring-boot-devtools'
-    developmentOnly 'org.springframework.boot:spring-boot-docker-compose'
     runtimeOnly 'io.micrometer:micrometer-registry-prometheus'
     annotationProcessor 'org.springframework.boot:spring-boot-configuration-processor'
     testImplementation 'org.springframework.boot:spring-boot-starter-test'
     testImplementation 'io.projectreactor:reactor-test'
+    testImplementation "org.mockito.kotlin:mockito-kotlin:5.0.0"
 }
 
 dependencyManagement {
@@ -52,7 +56,7 @@ dependencyManagement {
     }
 }
 
-tasks.withType(KotlinCompile) {
+tasks.withType(KotlinCompile).configureEach {
     kotlinOptions {
         freeCompilerArgs += '-Xjsr305=strict'
         jvmTarget = '17'
