@@ -157,3 +157,7 @@ performance, retry behavior, and overall observability.
 
 By following the steps mentioned above and using the provided scripts and example dashboards, you can effectively
 monitor the service using Prometheus and Grafana, and gain valuable insights into its performance and behavior.
+
+## Test Coverage
+
+![code-coverage.png](docs%2Fcode-coverage.png)
