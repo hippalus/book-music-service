@@ -59,9 +59,7 @@ leveraging non-blocking I/O to achieve high concurrency and scalability.
 
 The service utilizes several libraries to enhance its functionality and maintain code quality:
 
-- *
-  *[Google SDK](https://github.com/googleapis/google-api-java-client-services/tree/main/clients/google-api-services-books/v1/2.0.0)
-  **: The Google Books API allows clients to access the Google Books repository.
+- **[Google SDK](https://github.com/googleapis/google-api-java-client-services/tree/main/clients/google-api-services-books/v1/2.0.0)**: The Google Books API allows clients to access the Google Books repository.
 
 - **Resilience4j**: A fault tolerance library that provides various resilience patterns such as circuit breakers, rate
   limiters, bulk head, and retries. Resilience4j helps ensure the stability of the service even when the upstream
