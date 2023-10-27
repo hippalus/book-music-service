@@ -13,6 +13,8 @@ import io.github.resilience4j.bulkhead.annotation.Bulkhead
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker
 import io.github.resilience4j.retry.annotation.Retry
 import io.micrometer.observation.annotation.Observed
+import org.slf4j.Logger
+import org.slf4j.LoggerFactory
 import org.springframework.http.HttpStatusCode
 import org.springframework.stereotype.Service
 import reactor.core.publisher.Flux
@@ -23,24 +25,33 @@ class BooksServiceGoogleImpl(
     private val googleBooks: Books,
     private val googleApiProperties: GoogleApiProperties
 ) : BooksService {
-
+    
+    companion object {
+        private val log: Logger = LoggerFactory.getLogger(this::class.java)
+    }
+    
     @Retry(name = "google-books")
     @Bulkhead(name = "google-books")
-    @CircuitBreaker(name = "google-books")
+    @CircuitBreaker(name = "google-books", fallbackMethod = "searchFallBack")
     @Observed(name = "search-google-books", contextualName = "searching-google-books")
     override fun search(criteria: SearchCriteria): Flux<Book> {
         return Flux.fromIterable(googleBooks(criteria))
             .subscribeOn(Schedulers.boundedElastic())
     }
-
+    
+    fun searchFallBack(criteria: SearchCriteria, ex: Exception): Flux<Book> {
+        log.warn("#searchFallBack invoking for GoogleApiClient", ex)
+        return Flux.empty()
+    }
+    
     private fun googleBooks(criteria: SearchCriteria): List<Book> {
         return try {
             val volumes: Books.Volumes = googleBooks.volumes()
             val volumesList = volumes.list(criteria.query)
                 .setMaxResults(googleApiProperties.searchLimit.toLong())
-
+            
             val execute = volumesList.execute()
-
+            
             execute.items
                 ?.map { it.volumeInfo }
                 ?.map { Book(it.title, it.authors) }

@@ -14,8 +14,8 @@ class SearchService(
 ) {
 
     fun search(criteria: SearchCriteria): Mono<SearchResult> {
-        val books: Mono<List<Book>> = booksService.search(criteria).collectList()
         val albums: Mono<List<Album>> = albumsService.search(criteria).collectList()
+        val books: Mono<List<Book>> = booksService.search(criteria).collectList()
 
         return Mono.zip(books, albums).map { tuple -> SearchResult(tuple.t1, tuple.t2) }
     }
