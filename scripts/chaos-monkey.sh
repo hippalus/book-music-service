@@ -29,13 +29,21 @@ get_random_index() {
   echo $(($RANDOM % ${#query_terms[@]}))
 }
 
+# Function to URL encode a string
+url_encode() {
+  local string="$1"
+  # Use Python to URL encode the string
+  python3 -c "import urllib.parse; print(urllib.parse.quote('''$string'''))"
+}
+
 # Perform high concurrent calls using ab
 perform_concurrent_calls() {
   query="${query_terms[$(get_random_index)]}"
-  endpoint="http://localhost:8080/search?query=$query"
+  encoded_query=$(url_encode "$query")
+  endpoint="http://localhost:8080/search?query=$encoded_query"
 
   # Make the concurrent API calls using ab
-  ab -c 5 -n 100 "$endpoint"
+  ab -c 10 -n 100 "$endpoint"
 }
 
 # Iterate 20 times to perform 5 concurrent calls

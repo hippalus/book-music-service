@@ -3745,37 +3745,6 @@
       },
       {
         "current": {
-          "isNone": true,
-          "selected": false,
-          "text": "None",
-          "value": ""
-        },
-        "datasource": {
-          "type": "prometheus",
-          "uid": "prometheus"
-        },
-        "definition": "",
-        "hide": 0,
-        "includeAll": false,
-        "label": "HikariCP-Pool",
-        "multi": false,
-        "name": "hikaricp",
-        "options": [],
-        "query": {
-          "query": "label_values(hikaricp_connections{instance=\"$instance\", application=\"$application\"}, pool)",
-          "refId": "Prometheus-hikaricp-Variable-Query"
-        },
-        "refresh": 1,
-        "regex": "",
-        "skipUrlSync": false,
-        "sort": 1,
-        "tagValuesQuery": "",
-        "tagsQuery": "",
-        "type": "query",
-        "useTags": false
-      },
-      {
-        "current": {
           "selected": false,
           "text": "All",
           "value": "$__all"

@@ -84,7 +84,7 @@
       },
       "gridPos": {
         "h": 9,
-        "w": 8,
+        "w": 12,
         "x": 0,
         "y": 0
       },
@@ -191,8 +191,8 @@
       },
       "gridPos": {
         "h": 9,
-        "w": 8,
-        "x": 8,
+        "w": 12,
+        "x": 12,
         "y": 0
       },
       "id": 8,
@@ -220,93 +220,6 @@
         }
       ],
       "title": "$application throughput for $uri",
-      "type": "timeseries"
-    },
-    {
-      "datasource": "Prometheus",
-      "fieldConfig": {
-        "defaults": {
-          "color": {
-            "mode": "palette-classic"
-          },
-          "custom": {
-            "axisCenteredZero": false,
-            "axisColorMode": "text",
-            "axisLabel": "",
-            "axisPlacement": "auto",
-            "barAlignment": 0,
-            "drawStyle": "line",
-            "fillOpacity": 0,
-            "gradientMode": "none",
-            "hideFrom": {
-              "legend": false,
-              "tooltip": false,
-              "viz": false
-            },
-            "lineInterpolation": "linear",
-            "lineWidth": 1,
-            "pointSize": 5,
-            "scaleDistribution": {
-              "type": "linear"
-            },
-            "showPoints": "auto",
-            "spanNulls": false,
-            "stacking": {
-              "group": "A",
-              "mode": "none"
-            },
-            "thresholdsStyle": {
-              "mode": "off"
-            }
-          },
-          "mappings": [],
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              {
-                "color": "green",
-                "value": null
-              },
-              {
-                "color": "red",
-                "value": 80
-              }
-            ]
-          }
-        },
-        "overrides": []
-      },
-      "gridPos": {
-        "h": 9,
-        "w": 8,
-        "x": 16,
-        "y": 0
-      },
-      "id": 4,
-      "options": {
-        "legend": {
-          "calcs": [],
-          "displayMode": "list",
-          "placement": "bottom",
-          "showLegend": true
-        },
-        "tooltip": {
-          "mode": "single",
-          "sort": "none"
-        }
-      },
-      "targets": [
-        {
-          "datasource": "Prometheus",
-          "editorMode": "code",
-          "exemplar": true,
-          "expr": "sum(rate(make_total[$__rate_interval])) by (name, size)",
-          "legendFormat": "{{size}} {{name}}",
-          "range": true,
-          "refId": "A"
-        }
-      ],
-      "title": "steeped music-book",
       "type": "timeseries"
     },
     {
@@ -386,7 +299,7 @@
           "unit": "s"
         }
       },
-      "pluginVersion": "9.2.6",
+      "pluginVersion": "10.0.1",
       "reverseYBuckets": true,
       "targets": [
         {
@@ -419,7 +332,7 @@
     }
   ],
   "refresh": "5s",
-  "schemaVersion": 37,
+  "schemaVersion": 38,
   "style": "dark",
   "tags": [],
   "templating": {
@@ -456,8 +369,8 @@
         "allValue": ".*",
         "current": {
           "selected": false,
-          "text": "/search?query={query}",
-          "value": "/search?query={query}"
+          "text": "All",
+          "value": "$__all"
         },
         "datasource": {
           "type": "prometheus",

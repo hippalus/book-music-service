@@ -8,7 +8,6 @@ spring:
     name: book-music-service
     org: kramphub
 
-
 book-album-api:
   services:
     itunes:
@@ -63,9 +62,9 @@ resilience4j.retry:
 resilience4j.bulkhead:
   instances:
     google-books:
-      max-concurrent-calls: 100
+      max-concurrent-calls: 10
     itunes:
-      max-concurrent-calls: 100
+      max-concurrent-calls: 50
   metrics:
     enabled: true
 

@@ -29,7 +29,6 @@ services:
       - "3000:3000"
 
   book-music-app:
-    image: book-music-aps:1.4
     build:
       context: ./
       dockerfile: Dockerfile
@@ -40,8 +39,6 @@ services:
       - "8080:8080"
     volumes:
       - ../:/production
-      - ${PWD}/logs:/logs
-
 
 volumes:
   prometheus:

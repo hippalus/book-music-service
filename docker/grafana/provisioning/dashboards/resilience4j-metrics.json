@@ -1268,7 +1268,7 @@
         "datasource": "Prometheus",
         "definition": "label_values(resilience4j_circuitbreaker_state, name)",
         "hide": 0,
-        "includeAll": false,
+        "includeAll": true,
         "label": "CircuitBreaker Name",
         "multi": true,
         "name": "circuitbreaker_name",
