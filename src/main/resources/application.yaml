@@ -11,6 +11,12 @@ book-album-api:
     itunes:
       url: https://itunes.apple.com
 
+google-books:
+  search-limit: 5
+
+itunes:
+  search-limit: 5
+
 resilience4j.circuitbreaker:
   instances:
     google-books:

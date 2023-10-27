@@ -11,7 +11,8 @@ import reactor.core.publisher.Mono
 
 @Service
 class AlbumsServiceITunesImpl(
-    private val iTunesClient: ITunesClient
+    private val iTunesClient: ITunesClient,
+    private val iTunesApiProperties: ITunesApiProperties
 ) : AlbumsService {
 
     override fun search(criteria: SearchCriteria): Flux<Album> {
@@ -29,7 +30,7 @@ class AlbumsServiceITunesImpl(
         entity = Entity.ALBUM.value,
         attribute = Attribute.ALBUM_TERM.value,
         lang = Lang.ENGLISH.code,
-        limit = 5 //TODO get from env
+        limit = iTunesApiProperties.searchLimit
     )
 
     private fun toModel(result: ITunesResult) = Album(result.collectionName, result.artistName)

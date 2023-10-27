@@ -5,6 +5,7 @@ import com.google.api.services.books.v1.model.Volume
 import com.google.api.services.books.v1.model.Volumes
 import com.kramphub.domain.model.Book
 import com.kramphub.domain.model.SearchCriteria
+import com.kramphub.infra.service.googlebooks.client.GoogleApiProperties
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
 import org.mockito.Mockito.mock
@@ -21,9 +22,9 @@ class BooksServiceGoogleImplTest {
     fun setup() {
         // Mock the Google Books API client
         googleBooks = mock(Books::class.java)
-
+        val googleApiProperties = GoogleApiProperties()
         // Create the service with the mock client
-        booksService = BooksServiceGoogleImpl(googleBooks)
+        booksService = BooksServiceGoogleImpl(googleBooks, googleApiProperties)
     }
 
     @Test

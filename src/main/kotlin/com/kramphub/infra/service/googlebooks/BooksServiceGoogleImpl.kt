@@ -4,6 +4,7 @@ import com.google.api.services.books.v1.Books
 import com.kramphub.domain.model.Book
 import com.kramphub.domain.model.SearchCriteria
 import com.kramphub.domain.service.BooksService
+import com.kramphub.infra.service.googlebooks.client.GoogleApiProperties
 import io.github.resilience4j.bulkhead.annotation.Bulkhead
 import io.github.resilience4j.circuitbreaker.annotation.CircuitBreaker
 import io.github.resilience4j.retry.annotation.Retry
@@ -13,7 +14,8 @@ import reactor.core.scheduler.Schedulers
 
 @Service
 class BooksServiceGoogleImpl(
-    private val googleBooks: Books
+    private val googleBooks: Books,
+    private val googleApiProperties: GoogleApiProperties
 ) : BooksService {
 
     @Retry(name = "google-books")
@@ -27,13 +29,13 @@ class BooksServiceGoogleImpl(
     private fun googleBooks(criteria: SearchCriteria): List<Book> {
         val volumes: Books.Volumes = googleBooks.volumes()
         val volumesList = volumes.list(criteria.query)
-            .setMaxResults(5)
+            .setMaxResults(googleApiProperties.searchLimit.toLong())
 
         val execute = volumesList.execute()
 
-        return (execute.items
+        return execute.items
             ?.map { it.volumeInfo }
             ?.map { Book(it.title, it.authors) }
-            ?: listOf())
+            ?: listOf()
     }
 }
