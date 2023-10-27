@@ -33,6 +33,21 @@ concerns between API models, domain models, and infrastructure models.
 
 ## Architecture and Design Choices
 
+The project follows a layered architecture, emphasizing the separation of concerns, to ensure a clear and modular
+codebase.
+In the domain layer, the project defines domain models (Book, Album, SearchCriteria, SearchResult) that represent core
+concepts within the business domain. Additionally, domain services (BooksService, AlbumsService) encapsulate complex
+operations related to books and albums, respectively. In the infrastructure layer, the project leverages the Google SDK
+to interact with the Google Books API, retrieving books based on search criteria. The BooksServiceGoogleImpl implements
+the BooksService interface, utilizing the Google SDK to perform the book search. For retrieving albums, the project
+employs
+the [HTTP Interface](https://docs.spring.io/spring-framework/reference/integration/rest-clients.html#rest-http-interface)
+from Spring Framework 6.x to interact with the iTunes API. The AlbumsServiceITunesImpl implements the
+AlbumsService interface and utilizes the WebClient to search for albums based on search criteria. The API layer consists
+of the SearchController, responsible for handling HTTP requests and invoking the appropriate domain services to perform
+the search operation. The separation of concerns achieved in this project promotes code maintainability, testability,
+and scalability while effectively leveraging external APIs to retrieve books and albums.
+
 ## Language and Framework
 
 The service is implemented using Kotlin, a modern and concise programming language that runs on the Java Virtual
@@ -43,6 +58,10 @@ leveraging non-blocking I/O to achieve high concurrency and scalability.
 ## Libraries and Dependencies
 
 The service utilizes several libraries to enhance its functionality and maintain code quality:
+
+- *
+  *[Google SDK](https://github.com/googleapis/google-api-java-client-services/tree/main/clients/google-api-services-books/v1/2.0.0)
+  **: The Google Books API allows clients to access the Google Books repository.
 
 - **Resilience4j**: A fault tolerance library that provides various resilience patterns such as circuit breakers, rate
   limiters, bulk head, and retries. Resilience4j helps ensure the stability of the service even when the upstream
