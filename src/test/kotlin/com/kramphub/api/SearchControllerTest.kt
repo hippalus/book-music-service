@@ -4,6 +4,9 @@ import com.kramphub.domain.model.Album
 import com.kramphub.domain.model.Book
 import com.kramphub.domain.model.SearchResult
 import com.kramphub.domain.service.SearchService
+import com.kramphub.infra.config.toJson
+import com.kramphub.infra.exception.RemoteServiceException
+import com.kramphub.infra.exception.ServiceCallException
 import org.assertj.core.api.Assertions
 import org.junit.jupiter.api.Assertions.*
 import org.junit.jupiter.api.Test
@@ -12,11 +15,13 @@ import org.mockito.kotlin.whenever
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.reactive.WebFluxTest
 import org.springframework.boot.test.mock.mockito.MockBean
+import org.springframework.http.HttpStatus
 import org.springframework.http.MediaType
 import org.springframework.http.ProblemDetail
 import org.springframework.test.web.reactive.server.WebTestClient
 import org.springframework.test.web.reactive.server.expectBody
 import reactor.core.publisher.Mono
+import java.util.*
 
 @WebFluxTest(SearchController::class)
 class SearchControllerTest {
@@ -115,4 +120,79 @@ class SearchControllerTest {
             .expectStatus().is5xxServerError
             .expectBody<ProblemDetail>()
     }
+
+    @Test
+    fun `test search endpoint with Bad Request`() {
+        val query = ""
+
+        whenever(searchService.search(any())).thenReturn(Mono.error(IllegalArgumentException("query can not be empty")))
+
+        webTestClient
+            .get()
+            .uri("/search?query=$query")
+            .accept(MediaType.APPLICATION_JSON)
+            .exchange()
+            .expectStatus().is4xxClientError
+            .expectBody<ProblemDetail>()
+    }
+
+    @Test
+    fun `test search endpoint with service call error`() {
+        val query = "example query"
+
+        whenever(searchService.search(any())).thenReturn(
+            Mono.error(
+                ServiceCallException(
+                    ITunesErrorResponse(
+                        code = HttpStatus.BAD_REQUEST.value().toString(),
+                        status = HttpStatus.BAD_REQUEST.value().toString(),
+                        detail = "Bad Request"
+                    ).toJson(),
+                    HttpStatus.BAD_REQUEST
+                )
+            )
+        )
+
+        webTestClient
+            .get()
+            .uri("/search?query=$query")
+            .accept(MediaType.APPLICATION_JSON)
+            .exchange()
+            .expectStatus().is4xxClientError
+            .expectBody<ProblemDetail>()
+    }
+
+
+    @Test
+    fun `test search endpoint with remote call  error`() {
+        val query = "example query"
+
+        whenever(searchService.search(any())).thenReturn(
+            Mono.error(
+                RemoteServiceException(
+                    ITunesErrorResponse().toJson(),
+                    HttpStatus.INTERNAL_SERVER_ERROR
+                )
+            )
+        )
+
+        webTestClient
+            .get()
+            .uri("/search?query=$query")
+            .accept(MediaType.APPLICATION_JSON)
+            .exchange()
+            .expectStatus().is5xxServerError
+            .expectBody<ProblemDetail>()
+    }
+
+
+    data class ITunesErrorResponse(
+        val id: String = UUID.randomUUID().toString(),
+        val code: String = HttpStatus.INTERNAL_SERVER_ERROR.value().toString(),
+        val detail: String = "Internal Error",
+        val source: Any? = null,
+        val status: String = HttpStatus.INTERNAL_SERVER_ERROR.value().toString(),
+        val title: String = "Error Title"
+    )
+
 }

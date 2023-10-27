@@ -1,6 +1,7 @@
 package com.kramphub.infra.exception
 
 import com.google.api.client.http.HttpResponseException
+import com.kramphub.infra.config.toObject
 import org.slf4j.LoggerFactory
 import org.springframework.http.*
 import org.springframework.web.bind.annotation.ExceptionHandler
@@ -51,13 +52,25 @@ class ExceptionHandler : ResponseEntityExceptionHandler() {
     @ExceptionHandler(RemoteServiceException::class)
     fun handle(ex: RemoteServiceException): Mono<ProblemDetail> {
         log.warn("RemoteServiceException occurred [${ex.message}]", ex)
-        return Mono.just(ProblemDetail.forStatusAndDetail(ex.statusCode, ex.message ?: "Remote call error"))
+
+        val problemDetail = ProblemDetail.forStatusAndDetail(ex.statusCode, "Remote service error")
+        ex.message
+            ?.toObject<LinkedHashMap<String, Any>>()
+            ?.forEach { problemDetail.setProperty(it.key, it.value) }
+
+        return Mono.just(problemDetail)
     }
 
     @ExceptionHandler(ServiceCallException::class)
     fun handle(ex: ServiceCallException): Mono<ProblemDetail> {
         log.warn("ServiceCallException occurred [${ex.message}]", ex)
-        return Mono.just(ProblemDetail.forStatusAndDetail(ex.statusCode, ex.message ?: "Bad request"))
+
+        val problemDetail = ProblemDetail.forStatusAndDetail(ex.statusCode, "Service call error")
+        ex.message
+            ?.toObject<LinkedHashMap<String, Any>>()
+            ?.forEach { problemDetail.setProperty(it.key, it.value) }
+
+        return Mono.just(problemDetail)
     }
 
     @ExceptionHandler(Exception::class)

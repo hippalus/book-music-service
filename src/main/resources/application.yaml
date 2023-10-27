@@ -7,8 +7,6 @@ spring:
   application:
     name: book-music-service
     org: kramphub
-  profiles:
-    active: loki
 
 
 book-album-api:

@@ -5,6 +5,8 @@ import com.github.tomakehurst.wiremock.WireMockServer
 import com.github.tomakehurst.wiremock.client.WireMock.*
 import com.kramphub.domain.model.Album
 import com.kramphub.domain.model.SearchCriteria
+import com.kramphub.infra.exception.RemoteServiceException
+import com.kramphub.infra.exception.ServiceCallException
 import org.junit.jupiter.api.AfterAll
 import org.junit.jupiter.api.BeforeAll
 import org.junit.jupiter.api.Test
@@ -16,6 +18,7 @@ import org.springframework.test.context.DynamicPropertySource
 import reactor.core.publisher.Flux
 import reactor.test.StepVerifier
 import wiremock.org.apache.hc.core5.http.HttpHeaders
+import java.util.*
 
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
@@ -67,6 +70,15 @@ class AlbumsServiceITunesImplTest {
 
     @Test
     fun `search should return albums from ITunesClient`() {
+        wireMockServer.stubFor(
+            get(urlMatching("/search\\??(?:&?[^=&]*=[^=&]*)*"))
+                .willReturn(
+                    aResponse()
+                        .withBodyFile("albums.json")
+                        .withHeader(HttpHeaders.CONTENT_TYPE, "text/javascript;UTF-8")
+                        .withStatus(HttpStatus.OK.value())
+                )
+        )
         // Create test data
         val criteria = SearchCriteria(query = "Queen")
 
@@ -87,5 +99,57 @@ class AlbumsServiceITunesImplTest {
             .expectNext(Album("Queen (Deluxe)", "Nicki Minaj"))
             .verifyComplete()
     }
+
+
+    @Test
+    fun `test search endpoint with service call error`() {
+        wireMockServer.stubFor(
+            get(urlMatching("/search\\??(?:&?[^=&]*=[^=&]*)*"))
+                .willReturn(
+                    aResponse()
+                        .withBodyFile("client-error.json")
+                        .withStatus(HttpStatus.BAD_REQUEST.value())
+                )
+        )
+
+        // Create test data
+        val criteria = SearchCriteria(query = "invalid")
+
+        // Perform the search
+        StepVerifier.create(albumsServiceITunesImpl.search(criteria))
+            .expectError(ServiceCallException::class.java)
+            .verify()
+    }
+
+
+    @Test
+    fun `test search endpoint with remote call  error`() {
+        wireMockServer.stubFor(
+            get(urlMatching("/search\\??(?:&?[^=&]*=[^=&]*)*"))
+                .willReturn(
+                    aResponse()
+                        .withBodyFile("internal-error.json")
+                        .withStatus(HttpStatus.INTERNAL_SERVER_ERROR.value())
+                )
+        )
+
+        // Create test data
+        val criteria = SearchCriteria(query = "internal")
+
+        // Perform the search
+        StepVerifier.create(albumsServiceITunesImpl.search(criteria))
+            .expectError(RemoteServiceException::class.java)
+            .verify()
+    }
+
+
+    data class ITunesErrorResponse(
+        val id: String = UUID.randomUUID().toString(),
+        val code: String = HttpStatus.INTERNAL_SERVER_ERROR.value().toString(),
+        val detail: String = "Internal Error",
+        val source: Any? = null,
+        val status: String = HttpStatus.INTERNAL_SERVER_ERROR.value().toString(),
+        val title: String = "Error Title"
+    )
 
 }
